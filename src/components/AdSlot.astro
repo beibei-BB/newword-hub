@@ -1,0 +1,5 @@
+---
+import { site } from '../site.config';
+const snippets = [site.ads.adsense, site.ads.adsterra].filter(Boolean);
+---
+{site.ads.enabled && snippets.length > 0 && <aside class="ad" aria-label="Advertisement">{snippets.map(html => <Fragment set:html={html} />)}</aside>}

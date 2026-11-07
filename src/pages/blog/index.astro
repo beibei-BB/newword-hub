@@ -1,0 +1,6 @@
+---
+import Base from '../../layouts/Base.astro';
+import { posts } from '../../content';
+import { site } from '../../site.config';
+---
+<Base title={`Blog | ${site.name}`} description="Tips and introductions to our online tools."><h1>Blog</h1>{posts.map(post => <article><h2><a href={`/blog/${post.slug}/`}>{post.data.h1}</a></h2><p>{post.data.description}</p></article>)}</Base>

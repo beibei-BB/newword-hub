@@ -1,0 +1,5 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../site.config';
+---
+<Base title={`Contact | ${site.name}`} description="Get in touch with our team."><h1>Contact</h1><p>Questions or feedback? Email <a href={`mailto:${site.email}`}>{site.email}</a>.</p></Base>
