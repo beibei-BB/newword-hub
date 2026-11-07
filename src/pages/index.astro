@@ -1,0 +1,6 @@
+---
+import Base from '../layouts/Base.astro';
+import { tools } from '../content';
+import { site } from '../site.config';
+---
+<Base title={`${site.name} | Simple online tools`} description="Discover simple online tools for everyday tasks."><h1>{site.name}</h1><p>Find simple online tools for everyday tasks, all in one place.</p><div class="cards">{tools.map(tool => <article class="card"><h2><a href={`/${tool.slug}/`}>{tool.data.h1}</a></h2><p>{tool.data.description}</p></article>)}</div></Base>

@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import AdSlot from '../components/AdSlot.astro';
+import { tools } from '../content';
+export function getStaticPaths() { return tools.map(tool => ({params:{slug:tool.slug}, props:{tool}})); }
+const { tool } = Astro.props;
+const components = import.meta.glob('../tools/*/index.astro', {eager:true});
+const entry = components[`../tools/${tool.slug}/index.astro`] as any;
+if (!entry) throw new Error(`Missing tool component for ${tool.slug}`);
+const Tool = entry.default;
+const related = tools.filter(t => t.slug !== tool.slug).sort((a,b) => (tool.data.related?.includes(b.slug) ? 1 : 0) - (tool.data.related?.includes(a.slug) ? 1 : 0));
+const faqSchema = { '@context':'https://schema.org', '@type':'FAQPage', mainEntity: tool.data.faq.map((item: any) => ({'@type':'Question', name:item.question, acceptedAnswer:{'@type':'Answer', text:item.answer}})) };
+---
+<Base title={tool.data.title} description={tool.data.description}><h1>{tool.data.h1}</h1><p>{tool.data.intro}</p><Tool/><AdSlot/><section><h2>How to use</h2><ol>{tool.data.steps.map((step: string) => <li>{step}</li>)}</ol></section><section><h2>Frequently asked questions</h2>{tool.data.faq.map((item: any) => <details><summary>{item.question}</summary><p>{item.answer}</p></details>)}</section><AdSlot/>{tool.data.disclaimer && <p>{tool.data.disclaimer}</p>}{related.length > 0 && <section><h2>Related tools</h2><ul>{related.map(t => <li><a href={`/${t.slug}/`}>{t.data.h1}</a></li>)}</ul></section>}<button type="button" id="share">Share this page</button><span id="share-status" role="status"></span><script type="application/ld+json" set:html={JSON.stringify(faqSchema).replace(/</g, '\\u003c')} /></Base>
+<script>document.getElementById('share')?.addEventListener('click', async () => { const status = document.getElementById('share-status'); try { if (navigator.share) await navigator.share({title: document.title, url: location.href}); else { await navigator.clipboard.writeText(location.href); if (status) status.textContent = ' Link copied.'; } } catch { if (status) status.textContent = ' Could not share. Copy the page URL from your browser.'; } });</script>

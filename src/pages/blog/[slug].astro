@@ -1,0 +1,9 @@
+---
+import Base from '../../layouts/Base.astro';
+import { posts } from '../../content';
+import { marked } from 'marked';
+export function getStaticPaths() { return posts.map(post => ({params:{slug:post.slug}, props:{post}})); }
+const { post } = Astro.props;
+const html = await marked.parse(post.content);
+---
+<Base title={post.data.title} description={post.data.description}><article><h1>{post.data.h1}</h1><div set:html={html}/></article></Base>
